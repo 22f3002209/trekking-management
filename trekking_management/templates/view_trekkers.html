@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}
+View Trekkers
+{% endblock %}
+
+{% block navbar %}
+{% include "admin_navbar.html" %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2 class="text-success mb-4">
+        Trekkers
+    </h2>
+
+    <div class="card shadow border-0">
+        <div class="card-body">
+
+            {% if trekkers %}
+            <table class="table table-hover">
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Info</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                {% for trekker in trekkers %}
+                    <tr>
+                        <td>{{ trekker.id }}</td>
+                        <td>{{ trekker.name }}</td>
+                        <td>{{ trekker.email }}</td>
+                        <td>
+                            <a href="{{ url_for('routes.admin_trekker_details', id=trekker.id) }}"
+                                class="btn btn-dark btn-sm">
+                                View
+                            </a>
+                        </td>
+                        <td>
+                        {% if trekker.is_active %}
+                            <span class="badge bg-success">
+                                Active
+                            </span>
+
+                        {% else %}
+                            <span class="badge bg-danger">
+                                Inactive
+                            </span>
+
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        <form action="{{ url_for('routes.toggle_trekker_status', id=trekker.id) }}"
+                            method="POST">
+
+                            {% if trekker.is_active %}
+                                <button type="submit" class="btn btn-warning btn-sm"
+                                        onclick="return confirm('Deactivate this trekker?');">
+                                    Deactivate
+                                </button>
+
+                            {% else %}
+                                <button type="submit" class="btn btn-success btn-sm"
+                                        onclick="return confirm('Activate this trekker?');">
+                                    Activate
+                                </button>
+
+                            {% endif %}
+                        </form>
+                    </td>
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+            {% else %}
+            <div class="text-center py-4">
+                <h5 class="text-muted">
+                    No trekkers registered yet.
+                </h5>
+            </div>
+
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

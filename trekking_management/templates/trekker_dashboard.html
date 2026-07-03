@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}
+Trekker Dashboard
+{% endblock %}
+
+{% block navbar %}
+{% include "trekker_navbar.html" %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <h2 class="text-success">
+            Available Treks
+        </h2>
+
+        <div>
+            <a href="{{ url_for('routes.my_bookings') }}"
+            class="btn btn-success">
+                My Bookings
+            </a>
+
+            <a href="{{ url_for('routes.trekker_history') }}"
+            class="btn btn-success">
+                Trek history
+            </a>
+        </div>
+
+    </div>
+
+    <!-- Search card -->
+    <div class="card shadow border-0 mb-4">
+        <div class="card-body">
+
+            <form method="GET">
+
+                <div class="row">
+                    <div class="col-md-5">
+                        <input type="text" class="form-control" name="location"
+                            placeholder="Search by location" value="{{ location }}">
+                    </div>
+
+                    <div class="col-md-4">
+                        <select class="form-select" name="difficulty">
+                            <option value="">
+                                All Difficulties
+                            </option>
+
+                            <option value="Easy"
+                                {% if difficulty=='Easy' %}selected{% endif %}>
+                                Easy
+                            </option>
+
+                            <option value="Moderate"
+                                {% if difficulty=='Moderate' %}selected{% endif %}>
+                                Moderate
+                            </option>
+
+                            <option value="Hard"
+                                {% if difficulty=='Hard' %}selected{% endif %}>
+                                Hard
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <button type="submit"
+                                class="btn btn-success w-100">
+                            Search
+                        </button>
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+    <!-- Trek Table -->
+    <div class="card shadow border-0">
+        <div class="card-body">
+            <table class="table table-hover">
+
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Location</th>
+                        <th>Difficulty</th>
+                        <th>Slots</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for trek in available_treks %}
+
+                    <tr>
+                        <td>{{ trek.name }}</td>
+                        <td>{{ trek.location }}</td>
+                        <td>{{ trek.difficulty }}</td>
+                        <td>{{ trek.available_slots }}</td>
+                        <td>{{ trek.status }}</td>
+                        <td>
+                            <a href="{{ url_for('routes.trek_details', trek_id=trek.id) }}"
+                            class="btn btn-success btn-sm">
+                                View
+                            </a>
+                        </td>
+                    </tr>
+
+                {% endfor %}
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

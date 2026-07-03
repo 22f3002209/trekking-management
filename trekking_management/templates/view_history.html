@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}
+Trek History
+{% endblock %}
+
+{% block navbar %}
+{% include "admin_navbar.html" %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2 class="text-success mb-4">
+        Completed Trek History
+    </h2>
+
+    {% if completed_treks %}
+        {% for trek in completed_treks %}
+
+        <div class="card shadow border-0 mb-5">
+            <div class="card-body">
+
+                <h3 class="text-success mb-4">
+                    {{ trek.name }}
+                </h3>
+
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <p><strong>Location:</strong> {{ trek.location }}</p>
+
+                        <p><strong>Difficulty:</strong> {{ trek.difficulty }}</p>
+
+                        <p><strong>Duration:</strong> {{ trek.duration }} Days</p>
+
+                        <p><strong>Guide:</strong> {{ trek.staff.name }}</p>
+                    </div>
+
+                    <div class="col-md-6">
+                        <p><strong>Start Date:</strong> {{ trek.start_date }}</p>
+
+                        <p><strong>End Date:</strong> {{ trek.end_date }}</p>
+
+                        <p><strong>Total Slots:</strong> {{ trek.total_slots }}</p>
+
+                        <p><strong>Participants:</strong>
+                            {{ trek.histories|length }}
+                        </p>
+                    </div>
+
+                </div>
+
+                <hr>
+                <h5 class="text-primary mb-3">
+                    Participants
+                </h5>
+
+                {% if trek.histories %}
+                <table class="table table-bordered table-hover">
+
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+
+                            <th>Email</th>
+
+                            <th>Contact</th>
+
+                            <th>Completed On</th>
+
+                            <th>Rating</th>
+
+                            <th>Feedback</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                    {% for history in trek.histories %}
+                    <tr>
+                        <td>{{ history.trekker.name }}</td>
+
+                        <td>{{ history.trekker.email }}</td>
+
+                        <td>{{ history.trekker.contact }}</td>
+
+                        <td>{{ history.completed_on.strftime("%d-%m-%Y") }}</td>
+
+                        <td>
+                            {% if history.rating %}
+                                ⭐ {{ history.rating }}/5
+
+                            {% else %}
+                                N/A
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+                            {{ history.feedback or "N/A" }}
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+                {% else %}
+                <div class="alert alert-info">
+                    No participant history available.
+                </div>
+
+                {% endif %}
+
+            </div>
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+    <div class="alert alert-info">
+        No completed treks yet.
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

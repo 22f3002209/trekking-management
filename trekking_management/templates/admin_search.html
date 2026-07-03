@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block title %}
+Admin Search
+{% endblock %}
+
+{% block navbar %}
+{% include "admin_navbar.html" %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2 class="text-success mb-4">
+        Search System
+    </h2>
+
+    <div class="card shadow border-0 mb-4">
+        <div class="card-body">
+
+            <form method="GET">
+
+                <div class="row">
+                    <div class="col-md-10">
+                        <input type="text"
+                               class="form-control"
+                               name="search_text"
+                               placeholder="Search Trek, Staff or Trekker by Name or ID"
+                               value="{{ search_text }}">
+                    </div>
+
+                    <div class="col-md-2">
+                        <button type="submit"
+                                class="btn btn-success w-100">
+                            Search
+                        </button>
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+    {% if search_text %}
+
+    <!-- Treks -->
+
+    <div class="card shadow border-0 mb-4">
+        <div class="card-body">
+
+            <h4 class="text-success">
+                Treks
+            </h4>
+
+            {% if treks %}
+            <table class="table">
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Location</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for trek in treks %}
+                    <tr>
+                        <td>{{ trek.id }}</td>
+                        <td>{{ trek.name }}</td>
+                        <td>{{ trek.location }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+
+            {% else %}
+            <p class="text-muted mb-0">
+                No matching treks found.
+            </p>
+
+            {% endif %}
+
+        </div>
+    </div>
+
+    <!-- Staff -->
+
+    <div class="card shadow border-0 mb-4">
+        <div class="card-body">
+
+            <h4 class="text-success">
+                Staff
+            </h4>
+
+            {% if staff_members %}
+            <table class="table">
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for staff in staff_members %}
+                    <tr>
+                        <td>{{ staff.id }}</td>
+                        <td>{{ staff.name }}</td>
+                        <td>{{ staff.email }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+
+            {% else %}
+            <p class="text-muted mb-0">
+                No matching staff members found.
+            </p>
+
+            {% endif %}
+
+        </div>
+    </div>
+
+    <!-- Trekkers -->
+
+    <div class="card shadow border-0">
+        <div class="card-body">
+
+            <h4 class="text-success">
+                Trekkers
+            </h4>
+
+            {% if trekkers %}
+            <table class="table">
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for trekker in trekkers %}
+                    <tr>
+                        <td>{{ trekker.id }}</td>
+                        <td>{{ trekker.name }}</td>
+                        <td>{{ trekker.email }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+
+            {% else %}
+
+            <p class="text-muted mb-0">
+                No matching trekkers found.
+            </p>
+
+            {% endif %}
+
+        </div>
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

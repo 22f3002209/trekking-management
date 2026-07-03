@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}
+Edit Profile
+{% endblock %}
+
+{% block navbar %}
+{% include "trekker_navbar.html" %}
+{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-6">
+        <div class="card shadow border-0 p-4">
+
+            <h2 class="text-success text-center mb-4">
+                Edit Profile
+            </h2>
+
+            <form method="POST">
+
+                <div class="mb-3">
+                    <label class="form-label">Name</label>
+
+                    <input type="text"class="form-control" name="name" value="{{ trekker.name }}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+
+                    <input type="email" class="form-control" value="{{ trekker.email }}" readonly>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Age</label>
+
+                    <input type="number" class="form-control" name="age" value="{{ trekker.age }}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Gender</label>
+
+                    <select class="form-select" name="gender">
+
+                        <option {% if trekker.gender=='Male' %}selected{% endif %}>
+                            Male
+                        </option>
+
+                        <option {% if trekker.gender=='Female' %}selected{% endif %}>
+                            Female
+                        </option>
+
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Contact</label>
+
+                    <input type="text" class="form-control" name="contact" value="{{ trekker.contact }}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Emergency Contact</label>
+
+                    <input type="text" class="form-control" name="emergency_contact"
+                           value="{{ trekker.emergency_contact }}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Emergency Contact Relation</label>
+
+                    <input type="text" class="form-control" name="emergency_contact_relation"
+                           value="{{ trekker.emergency_contact_relation }}">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">New Password</label>
+                    
+                    <input type="password" class="form-control" name="password"
+                    placeholder="Leave blank to keep current password">
+                </div>
+
+                <button type="submit"
+                        class="btn btn-success w-100">
+                    Update Profile
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}
+Update Trek
+{% endblock %}
+
+{% block navbar %}
+{% include "staff_navbar.html" %}
+{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-6">
+        <div class="card shadow border-0 p-4">
+
+            <h2 class="text-success text-center mb-4">
+                Update Trek
+            </h2>
+
+            <form method="POST">
+
+                <div class="mb-3">
+                    <label class="form-label">Total Slots</label>
+                    <input type="text" class="form-control" value="{{ trek.total_slots }}" readonly>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Available Slots</label>
+                    <input type="number" class="form-control" name="available_slots" value="{{trek.available_slots }}"
+                    readonly>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Status</label>
+                    <select class="form-select" name="status">
+                        <option {% if trek.status=='Open' %}selected{% endif %}>
+                            Open
+                        </option>
+
+                        <option {% if trek.status=='Ongoing' %}selected{% endif %}>
+                            Ongoing
+                        </option>
+
+                        <option {% if trek.status=='Closed' %}selected{% endif %}>
+                            Closed
+                        </option>
+
+                        <option {% if trek.status=='Completed' %}selected{% endif %}>
+                            Completed
+                        </option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-success w-100">
+                    Update Trek
+                </button>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

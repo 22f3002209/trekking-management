@@ -1,0 +1,31 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+
+    <div class="container">
+
+        <a class="navbar-brand fw-bold text-success"
+           href="{{ url_for('routes.staff_dashboard') }}">
+            🏔 TrekMate
+        </a>
+
+        <div class="ms-auto">
+
+            <a href="{{ url_for('routes.staff_dashboard') }}"
+               class="btn btn-outline-success me-2">
+                Dashboard
+            </a>
+
+            <a href="{{ url_for('routes.staff_edit_profile') }}"
+                class="btn btn-outline-success me-2">
+                 Edit Profile
+            </a>
+
+            <a href="{{ url_for('auth.staff_logout') }}"
+               class="btn btn-danger">
+                Logout
+            </a>
+
+        </div>
+
+    </div>
+
+</nav>

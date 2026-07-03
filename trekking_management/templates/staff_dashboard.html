@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %}
+Staff Dashboard
+{% endblock %}
+
+{% block navbar %}
+{% include "staff_navbar.html" %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="text-center mb-5">
+
+        <h1 class="text-success">
+            Trek Staff Dashboard
+        </h1>
+
+        <p class="text-muted">
+            Welcome,
+            {{ current_user.name }}
+        </p>
+
+    </div>
+
+    <div class="row mb-5">
+
+        <div class="col-md-6">
+            <div class="card shadow border-0">
+                <div class="card-body text-center">
+
+                    <h2>
+                        🏔
+                    </h2>
+
+                    <h4>
+                        Assigned Treks
+                    </h4>
+
+                    <h1 class="text-success">
+                        {{ total_assigned }}
+                    </h1>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow border-0">
+                <div class="card-body text-center">
+
+                    <h2>
+                        🥾
+                    </h2>
+
+                    <h4>
+                        Total Registered Trekkers
+                    </h4>
+
+                    <h1 class="text-success">
+                        {{ total_registered }}
+                    </h1>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card shadow border-0">
+        <div class="card-body">
+
+            <h3 class="text-success mb-3">
+                Assigned Treks
+            </h3>
+
+            {% if assigned_treks %}
+            <table class="table table-hover">
+
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Location</th>
+                        <th>Dates</th>
+                        <th>Status</th>
+                        <th>Available Slots</th>
+                        <th>Registered Trekkers</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for trek in assigned_treks %}
+                    <tr>
+                        <td>{{ trek.name }}</td>
+                        <td>{{ trek.location }}</td>
+                        <td>
+                            {{ trek.start_date }}
+                            -
+                            {{ trek.end_date }}
+                        </td>
+                        <td>{{ trek.status }}</td>
+                        <td>
+                            {{ trek.available_slots }}
+                            /
+                            {{ trek.total_slots }}
+                        </td>
+                        <td>
+                            {{ trek_counts[trek.id] }}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('routes.staff_update_trek', trek_id=trek.id) }}"
+                               class="btn btn-success btn-sm">
+                                Manage
+                            </a>
+
+                            <a href="{{ url_for('routes.staff_view_participants', trek_id=trek.id) }}"
+                                class="btn btn-dark btn-sm">
+                                Participants
+                            </a>
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+                </tbody>
+
+            </table>
+
+            {% else %}
+            <div class="text-center py-4">
+
+                <h5 class="text-muted">
+                    No treks assigned yet.
+                </h5>
+
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

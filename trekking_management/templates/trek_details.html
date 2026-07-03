@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block title %}
+Trek Details
+{% endblock %}
+
+{% block navbar %}
+{% include "trekker_navbar.html" %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow border-0">
+
+                <div class="card-body">
+
+                    <h2 class="text-success text-center mb-4">
+                        {{ trek.name }}
+                    </h2>
+
+                    <table class="table">
+
+                        <tr>
+                            <th width="35%">Location</th>
+                            <td>{{ trek.location }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Difficulty</th>
+                            <td>{{ trek.difficulty }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Duration</th>
+                            <td>{{ trek.duration }} Day(s)</td>
+                        </tr>
+
+                        <tr>
+                            <th>Trek Guide</th>
+                            <td>{{ trek.staff.name }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Total Slots</th>
+                            <td>{{ trek.total_slots }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Available Slots</th>
+                            <td>{{ trek.available_slots }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Start Date</th>
+                            <td>{{ trek.start_date }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>End Date</th>
+                            <td>{{ trek.end_date }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Status</th>
+                            <td>
+                                {% if trek.status == 'Open' %}
+                                    <span class="badge bg-success">
+                                        Open
+                                    </span>
+
+                                {% elif trek.status == 'Ongoing' %}
+                                    <span class="badge bg-primary">
+                                        Ongoing
+                                    </span>
+
+                                {% elif trek.status == 'Closed' %}
+                                    <span class="badge bg-warning text-dark">
+                                        Closed
+                                    </span>
+
+                                {% else %}
+                                    <span class="badge bg-dark">
+                                        Completed
+                                    </span>
+
+                                {% endif %}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th>Description</th>
+                            <td>{{ trek.description }}</td>
+                        </tr>
+
+                    </table>
+
+                    <div class="alert alert-info mt-4">
+                        <strong>Confirmation</strong>
+                        <br>
+                        Please review the trek details carefully before booking.
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('routes.trekker_dashboard') }}"
+                           class="btn btn-outline-secondary">
+                            Back
+                        </a>
+
+                        {% if existing_booking %}
+                            <div>
+
+                                <button class="btn btn-success me-2" disabled>
+                                    Already Booked
+                                </button>
+
+                                <a href="{{ url_for('routes.cancel_booking',
+                                                    booking_id=existing_booking.id) }}"
+                                class="btn btn-danger"
+                                onclick="return confirm('Cancel this booking?');">
+                                    Cancel Booking
+                                </a>
+                            </div>
+
+                        {% elif trek.available_slots <= 0 %}
+                            <button class="btn btn-secondary" disabled>
+                                Slots Full
+                            </button>
+
+                        {% else %}
+                            <form method="POST"
+                                action="{{ url_for('routes.book_trek',
+                                                    trek_id=trek.id) }}">
+                                <button type="submit"
+                                        class="btn btn-success"
+                                        onclick="return confirm('Do you want to book {{ trek.name }}?');">
+                                    Confirm Booking
+                                </button>
+                            </form>
+                        
+                        {% endif %}
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

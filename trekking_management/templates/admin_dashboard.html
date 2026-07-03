@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}
+Admin Dashboard
+{% endblock %}
+
+{% block navbar %}
+    {% include "admin_navbar.html" %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <div class="text-center mb-5">
+
+        <h1 class="text-success">
+            🏔️ Admin Dashboard
+        </h1>
+
+        <p class="text-cmuted">
+            Trekking Management System Overview
+        </p>
+
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-3">
+            <div class="card shadow border-0 text-center">
+                <div class="card-body">
+
+                    <h1>🏔️</h1>
+                    <h5>Total Treks</h5>
+                    <h2 class="text-success">
+                        {{ total_treks }}
+                    </h2>
+
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow border-0 text-center">
+                <div class="card-body">
+
+                    <h1>🧭</h1>
+                    <h5>Total Trek Staff</h5>
+                    <h2 class="text-success">
+                        {{ total_staff }}
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow border-0 text-center">
+                <div class="card-body">
+
+                    <h1>🥾</h1>
+                    <h5>Total Trekkers</h5>
+                    <h2 class="text-success">
+                        {{ total_trekkers }}
+                    </h2>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card shadow border-0 text-center">
+                <div class="card-body">
+
+                    <h1>📋</h1>
+                    <h5>Total Bookings</h5>
+                    <h2 class="text-success">
+                        {{ total_bookings }}
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row mt-5 g-4">
+        
+        <div class="col-md-3">
+            <a href="{{ url_for('routes.manage_treks') }}" class="btn btn-success w-100 py-3">
+                Manage Treks
+            </a>
+        </div>
+
+        <div class="col-md-3">
+            <a href="{{ url_for('routes.manage_staff') }}" class="btn btn-success w-100 py-3">
+                Manage Staff
+            </a>
+        </div>
+
+        <div class="col-md-3">
+            <a href="{{ url_for('routes.view_trekkers') }}" class="btn btn-success w-100 py-3">
+                View Trekkers
+            </a>
+        </div>
+
+        <div class="col-md-3">
+            <a href="{{ url_for('routes.view_bookings') }}" class="btn btn-success w-100 py-3">
+                View Bookings
+            </a>
+        </div>
+        
+    </div>
+
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-3">
+
+            <a href="{{ url_for('routes.view_history') }}"
+            class="btn btn-outline-success w-100 py-2">
+                📊 Trek History
+            </a>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

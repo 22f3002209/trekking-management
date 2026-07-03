@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}
+Trek History
+{% endblock %}
+
+{% block navbar %}
+{% include "trekker_navbar.html" %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2 class="text-success mb-4">
+        Trek History
+    </h2>
+
+    <div class="card shadow border-0">
+        <div class="card-body">
+
+            {% if history %}
+            <table class="table table-hover">
+
+                <thead>
+                    <tr>
+                        <th>Trek</th>
+                        <th>Completed On</th>
+                        <th>Rating</th>
+                        <th>Feedback</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for history in histories %}
+                    <tr>
+                        <td>
+                            {{ history.trek.name }}
+                        </td>
+
+                        <td>
+                            {{ history.completed_on }}
+                        </td>
+
+                        <td>
+                            {{ history.rating or 'N/A' }}
+                        </td>
+
+                        <td>
+                            {{ history.feedback or 'N/A' }}
+                        </td>
+
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+
+            {% else %}
+            <div class="text-center py-4">
+                <h5 class="text-muted">
+                    No history available yet.
+                </h5>
+            </div>
+
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

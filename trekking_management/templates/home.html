@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+
+    <div class="container">
+
+        <a class="navbar-brand fw-bold text-success"
+           href="{{ url_for('routes.home') }}">
+            🏔️ TrekMate
+        </a>
+
+        <button class="navbar-toggler"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarContent">
+
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarContent">
+
+            <ul class="navbar-nav ms-auto">
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('auth.admin_login') }}">
+                        Admin
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('auth.staff_register') }}">
+                        Staff Register
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('auth.staff_login') }}">
+                        Staff Login
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('auth.trekker_register') }}">
+                        Register
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="btn btn-success ms-2" href="{{ url_for('auth.trekker_login') }}">
+                        Trekker Login
+                    </a>
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</nav>
+{% endblock %}
+
+
+{% block content %}
+
+<!-- Hero Section -->
+
+<section class="py-5">
+
+    <div class="container text-center">
+
+        <h1 class="display-3 fw-bold text-success">
+            Explore. Trek. Conquer.
+        </h1>
+
+        <p class="lead text-muted mt-3">
+
+            Manage treks, guide adventurers,
+            and discover breathtaking destinations
+            through one powerful platform.
+
+        </p>
+
+        <div class="mt-4">
+
+            <a href="{{ url_for('auth.trekker_register') }}"
+               class="btn btn-success btn-lg me-2">
+
+                Start Your Journey
+
+            </a>
+
+            <a href="{{ url_for('auth.trekker_login') }}"
+               class="btn btn-outline-success btn-lg">
+
+                Login
+
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- Features -->
+
+<section class="container py-4">
+
+    <div class="row g-4">
+
+        <div class="col-md-4">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body text-center">
+
+                    <h2>🥾</h2>
+
+                    <h4>Book Treks</h4>
+
+                    <p class="text-muted">
+
+                        Discover and book exciting treks
+                        across multiple locations.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body text-center">
+
+                    <h2>🧭</h2>
+
+                    <h4>Expert Guides</h4>
+
+                    <p class="text-muted">
+
+                        Trek staff manage and guide
+                        participants through every journey.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body text-center">
+
+                    <h2>🏔</h2>
+
+                    <h4>Trek History</h4>
+
+                    <p class="text-muted">
+
+                        Track completed treks and maintain
+                        your adventure history.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

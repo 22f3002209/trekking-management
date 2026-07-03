@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %}
+My Bookings
+{% endblock %}
+
+{% block navbar %}
+{% include "trekker_navbar.html" %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <!-- Active Bookings -->
+
+    <div class="card shadow border-0 mb-4">
+        <div class="card-body">
+
+            <h4 class="text-success mb-3">
+                Active Bookings
+            </h4>
+
+            {% if booked_bookings %}
+
+            <table class="table table-hover">
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Trek</th>
+                        <th>Booking Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for booking in booked_bookings %}
+
+                    <tr>
+                        <td>{{ booking.id }}</td>
+
+                        <td>{{ booking.trek.name }}</td>
+
+                        <td>{{ booking.booking_date }}</td>
+
+                        <td>
+                            <span class="badge bg-success">
+                                Booked
+                            </span>
+                        </td>
+
+                        <td>
+                            <a href="{{ url_for('routes.cancel_booking', booking_id=booking.id) }}"
+                               class="btn btn-danger btn-sm"
+                               onclick="return confirm('Cancel this booking?');">
+                                Cancel
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+            {% else %}
+
+            <div class="text-center py-3">
+
+                <h6 class="text-muted">
+                    No active bookings.
+                </h6>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+    </div>
+
+
+    <!-- Cancelled Bookings -->
+
+    <div class="card shadow border-0">
+
+        <div class="card-body">
+
+            <h4 class="text-danger mb-3">
+                Cancelled Bookings
+            </h4>
+
+            {% if cancelled_bookings %}
+
+            <table class="table table-hover">
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Trek</th>
+                        <th>Booking Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for booking in cancelled_bookings %}
+
+                    <tr>
+                        <td>{{ booking.id }}</td>
+
+                        <td>{{ booking.trek.name }}</td>
+
+                        <td>{{ booking.booking_date }}</td>
+
+                        <td>
+                            <span class="badge bg-danger">
+                                Cancelled
+                            </span>
+                        </td>
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+            {% else %}
+
+            <div class="text-center py-3">
+
+                <h6 class="text-muted">
+                    No cancelled bookings.
+                </h6>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

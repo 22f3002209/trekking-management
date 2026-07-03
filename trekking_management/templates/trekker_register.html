@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block Title %}
+Trekker Registration
+{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+
+    <div class="container">
+
+        <a class="navbar-brand fw-bold text-success"
+        href="{{ url_for('routes.home') }}">
+        🏔️ Trekmate
+        </a>
+
+        <button class="navbar-toggler"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarContent">
+
+            <ul class="navbar-nav ms-auto">
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('auth.admin_login') }}">
+                    Admin
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('auth.staff_register') }}">
+                        Staff Register
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('auth.staff_login') }}">
+                        Staff
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('auth.trekker_register') }}">
+                        Register
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="btn btn-success ms-2" href="{{ url_for('auth.trekker_login') }}">
+                        Trekker Login
+                    </a>
+                </li>
+
+            </ul>
+
+        </div>
+        
+    </div>
+
+</nav>
+{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <div class="card shadow border-0 p-4">
+            
+            <div class="text-center mb-4">                
+                <h1>🏔️</h1>
+                <h2 class="text-success">Trekker Registration</h2>
+                <p class="text-muted">
+                    Begin your Trekking journey
+                </p>
+            </div>
+
+            <form method="POST">
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-control" name="name" required>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" name="email" required>
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Age</label>
+                        <input type="number" class="form-control" name="age" required>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Gender</label>
+                        <select class="form-select" name="gender" required>
+                            <option value="">Select</option>
+                            <option>Male</option>
+                            <option>Female</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Contact</label>
+                        <input type="text" class="form-control" name="contact" required>
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Emergency Contact</label>
+                        <input type="text" class="form-control" name="emergency_contact" required>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Relation</label>
+                        <input type="text" class="form-control" name="emergency_contact_relation">
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control" name="password" required>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Confirm Password</label>
+                        <input type="password" class="form-control" name="confirm_password" required>
+                    </div>
+
+                </div>
+
+                <button type="submit" class="btn btn-success w-100">
+                    Register
+                </button>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
