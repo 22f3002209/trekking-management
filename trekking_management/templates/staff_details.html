@@ -33,10 +33,18 @@ Staff Details
 
             <p>
                 <strong>Status:</strong>
-                {% if staff.is_active %}
+                {% if staff.approval_status == "Pending" %}
+                    Pending Approval
+
+                {% elif staff.approval_status == "Rejected" %}
+                    Rejected
+
+                {% elif staff.is_active %}
                     Active
+
                 {% else %}
                     Inactive
+
                 {% endif %}
             </p>
 

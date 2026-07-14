@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}
+Staff History
+{% endblock %}
+
+{% block navbar %}
+{% include "staff_navbar.html" %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="mb-4">
+
+        <h2 class="text-success">
+            Trek History
+        </h2>
+
+        <p class="text-muted">
+            Previously completed treks assigned to you.
+        </p>
+
+    </div>
+
+    <div class="card shadow border-0">
+
+        <div class="card-body">
+
+            {% if history %}
+
+            <table class="table table-hover align-middle">
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>Name</th>
+
+                        <th>Location</th>
+
+                        <th>Difficulty</th>
+
+                        <th>Duration</th>
+
+                        <th>Participants</th>
+
+                        <th>Completed On</th>
+
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for item in history %}
+
+                    <tr>
+
+                        <td>{{ item.trek.id }}</td>
+
+                        <td>{{ item.trek.name }}</td>
+
+                        <td>{{ item.trek.location }}</td>
+
+                        <td>{{ item.trek.difficulty }}</td>
+
+                        <td>{{ item.trek.duration }} Days</td>
+
+                        <td>{{ item.participants }}</td>
+
+                        <td>
+
+                            {{ item.trek.end_date.strftime('%d-%m-%Y') }}
+
+                        </td>
+
+                        <td>
+
+                            <a href="{{ url_for('routes.staff_view_trek', trek_id=item.trek.id) }}"
+                                class="btn btn-primary btn-sm">
+                                Details
+                            </a>
+
+                            <a href="{{ url_for('routes.staff_view_participants', trek_id=item.trek.id) }}"
+                                class="btn btn-dark btn-sm">
+                                Participants
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+            {% else %}
+
+            <div class="text-center py-5">
+
+                <h5 class="text-muted">
+
+                    No completed treks found.
+
+                </h5>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}
+Trek Details
+{% endblock %}
+
+{% block navbar %}
+{% include "staff_navbar.html" %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-success text-white">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <h3 class="mb-0">
+                    Trek Details
+                </h3>
+
+                <a href="{{ url_for('routes.staff_dashboard') }}"
+                   class="btn btn-light btn-sm">
+                    Back
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Trek ID</strong></div>
+                <div class="col-md-8">{{ trek.id }}</div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Trek Name</strong></div>
+                <div class="col-md-8">{{ trek.name }}</div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Location</strong></div>
+                <div class="col-md-8">{{ trek.location }}</div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Difficulty</strong></div>
+                <div class="col-md-8">{{ trek.difficulty }}</div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Duration</strong></div>
+                <div class="col-md-8">{{ trek.duration }} Days</div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Description</strong></div>
+                <div class="col-md-8">{{ trek.description }}</div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Total Slots</strong></div>
+                <div class="col-md-8">{{ trek.total_slots }}</div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Available Slots</strong></div>
+                <div class="col-md-8">{{ trek.available_slots }}</div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Registered Trekkers</strong></div>
+                <div class="col-md-8">{{ registered_trekkers }}</div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Start Date</strong></div>
+                <div class="col-md-8">
+                    {{ trek.start_date.strftime('%d-%m-%Y') }}
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>End Date</strong></div>
+                <div class="col-md-8">
+                    {{ trek.end_date.strftime('%d-%m-%Y') }}
+                </div>
+            </div>
+
+            <div class="row mb-3">
+
+                <div class="col-md-4">
+                    <strong>Status</strong>
+                </div>
+
+                <div class="col-md-8">
+
+                    {% if trek.status=="Pending" %}
+                        <span class="badge bg-secondary">Pending</span>
+
+                    {% elif trek.status=="Approved" %}
+                        <span class="badge bg-primary">Approved</span>
+
+                    {% elif trek.status=="Open" %}
+                        <span class="badge bg-success">Open</span>
+
+                    {% elif trek.status=="Closed" %}
+                        <span class="badge bg-danger">Closed</span>
+
+                    {% elif trek.status=="Completed" %}
+                        <span class="badge bg-dark">Completed</span>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

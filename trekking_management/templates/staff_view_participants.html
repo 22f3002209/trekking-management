@@ -12,107 +12,41 @@ Participants
 
 <div class="container mt-4">
 
-    <!-- Booked Participants -->
-
-    <div class="card shadow border-0 mb-5">
-
-        <div class="card-body">
-
-            <h4 class="text-success mb-3">
-                Registered Participants
-            </h4>
-
-            {% if booked_participants %}
-
-            <table class="table table-hover">
-
-                <thead>
-                    <tr>
-                        <th>Booking ID</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Trekker Info</th>
-                        <th>Contact</th>
-                        <th>Booking Date</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {% for booking in booked_participants %}
-
-                    <tr>
-                        <td>{{ booking.id }}</td>
-
-                        <td>{{ booking.trekker.name }}</td>
-
-                        <td>{{ booking.trekker.email }}</td>
-
-                        <td>
-
-                            <a href="{{ url_for('routes.staff_trekker_details',
-                                        trekker_id=booking.trekker.id,
-                                        trek_id=trek.id) }}"
-                               class="btn btn-dark btn-sm">
-                                View
-                            </a>
-
-                        </td>
-
-                        <td>{{ booking.trekker.contact }}</td>
-
-                        <td>
-                            {{ booking.booking_date.strftime('%d-%m-%Y %I:%M %p') }}
-                        </td>
-                    </tr>
-                    {% endfor %}
-
-                </tbody>
-
-            </table>
-
-            {% else %}
-
-            <div class="text-center py-4">
-                <h5 class="text-muted">
-                    No registered participants yet.
-                </h5>
-            </div>
-
-            {% endif %}
-
-        </div>
-
-    </div>
-
-    <!-- Cancelled Participants -->
+    <h2 class="text-success mb-4">
+        Participants - {{ trek.name }}
+    </h2>
 
     <div class="card shadow border-0">
 
         <div class="card-body">
 
-            <h4 class="text-danger mb-3">
-                Cancelled Participants
-            </h4>
-
-            {% if cancelled_participants %}
-
-            <table class="table table-hover">
+            {% if participants %}
+            <table class="table table-hover align-middle">
 
                 <thead>
                     <tr>
                         <th>Booking ID</th>
+
                         <th>Name</th>
+
                         <th>Email</th>
+
                         <th>Contact</th>
+
                         <th>Booking Date</th>
+
                         <th>Status</th>
+
+                        <th>Details</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    {% for booking in cancelled_participants %}
+
+                    {% for booking in participants %}
 
                     <tr>
+
                         <td>{{ booking.id }}</td>
 
                         <td>{{ booking.trekker.name }}</td>
@@ -126,15 +60,53 @@ Participants
                         </td>
 
                         <td>
+                            {% if booking.status == "Booked" %}
+                                <span class="badge bg-success">
+                                    Booked
+                                </span>
 
-                            <span class="badge bg-danger">
-                                Cancelled
-                            </span>
+                            {% elif booking.status == "Completed" %}
+                                <span class="badge bg-primary">
+                                    Completed
+                                </span>
+
+                            {% else %}
+                                <span class="badge bg-danger">
+                                    Cancelled
+                                </span>
+
+                            {% endif %}
+                        </td>
+
+                        <td>
+
+                            {% if booking.status == "Cancelled" %}
+
+                                <button
+                                    class="btn btn-secondary btn-sm"
+                                    disabled>
+                                    View
+                                </button>
+
+                            {% else %}
+
+                                <a href="{{ url_for(
+                                    'routes.staff_trekker_details',
+                                    trekker_id=booking.trekker.id,
+                                    trek_id=trek.id
+                                ) }}"
+                                class="btn btn-primary btn-sm">
+                                    View
+                                </a>
+
+                            {% endif %}
 
                         </td>
+
                     </tr>
 
                     {% endfor %}
+
                 </tbody>
 
             </table>
@@ -144,7 +116,9 @@ Participants
             <div class="text-center py-4">
 
                 <h5 class="text-muted">
-                    No cancelled bookings.
+
+                    No participants found.
+
                 </h5>
 
             </div>

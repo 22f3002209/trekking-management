@@ -67,7 +67,7 @@ class Trek(db.Model):
     created_on = db.Column(db.DateTime, default=datetime.utcnow)
 
     # Foreign key
-    assigned_staff_id = db.Column(db.Integer, db.ForeignKey("trek_staff.id", ondelete='SET NULL'), nullable=False)
+    assigned_staff_id = db.Column(db.Integer, db.ForeignKey("trek_staff.id"), nullable=False)
 
     # One to many relationship with TrekHistory
     histories = db.relationship('TrekHistory', backref='trek', cascade='all, delete-orphan', passive_deletes=True)

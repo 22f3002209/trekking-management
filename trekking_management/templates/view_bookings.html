@@ -12,130 +12,106 @@ View Bookings
 
 <div class="container mt-4">
 
-    <!-- Active Bookings -->
-    <div class="card shadow border-0 mb-4">
+    <div class="card shadow border-0">
+        <div class="card-header bg-success text-white">
+
+            <h3 class="mb-0">
+                All Bookings
+            </h3>
+
+        </div>
 
         <div class="card-body">
 
-            <h3 class="text-success mb-3">
-                Active Bookings
-            </h3>
-
-            {% if booked_bookings %}
-
-            <table class="table table-hover">
+            {% if bookings %}
+            <table class="table table-hover align-middle">
 
                 <thead>
                     <tr>
                         <th>Booking ID</th>
-                        <th>Trekker</th>
+
                         <th>Trek</th>
+
+                        <th>Trekker</th>
+
+                        <th>Staff</th>
+
                         <th>Booking Date</th>
+
+                        <th>Status</th>
+
                         <th>Trekker Info</th>
                     </tr>
                 </thead>
 
                 <tbody>
-
-                    {% for booking in booked_bookings %}
+                    {% for booking in bookings %}
                     <tr>
-
                         <td>{{ booking.id }}</td>
+
+                        <td>{{ booking.trek.name }}</td>
 
                         <td>{{ booking.trekker.name }}</td>
 
-                        <td>{{ booking.trek.name }}</td>
+                        <td>{{ booking.trek.staff.name }}</td>
 
                         <td>{{ booking.booking_date.strftime('%d-%m-%Y %I:%M %p') }}</td>
 
                         <td>
-                            <a href="{{ url_for('routes.admin_trekker_details',
-                                                id=booking.trekker.id) }}"
-                               class="btn btn-dark btn-sm">
-                                View
-                            </a>
+                            {% if booking.status == "Booked" %}
+                                <span class="badge bg-success">
+                                    Booked
+                                </span>
+
+                            {% elif booking.status == "Completed" %}
+                                <span class="badge bg-primary">
+                                    Completed
+                                </span>
+
+                            {% elif booking.status == "Cancelled" %}
+                                <span class="badge bg-danger">
+                                    Cancelled
+                                </span>
+
+                            {% endif %}
+                        </td>
+
+                        <td>
+
+                            {% if booking.status == "Cancelled" %}
+                                <button
+                                    class="btn btn-dark btn-sm"
+                                    disabled>
+                                    View
+                                </button>
+
+                            {% else %}
+                                <a href="{{ url_for('routes.admin_trekker_details',
+                                                    id=booking.trekker.id) }}"
+                                   class="btn btn-dark btn-sm">
+                                    View
+                                </a>
+
+                            {% endif %}
                         </td>
 
                     </tr>
-                    {% endfor %}
 
+                    {% endfor %}
                 </tbody>
 
             </table>
 
             {% else %}
 
-            <div class="alert alert-info mb-0">
-                No active bookings available.
+            <div class="text-center py-4">
+                <h5 class="text-muted">
+                    No bookings available.
+                </h5>
             </div>
 
             {% endif %}
-
         </div>
-
-    </div>
-
-
-    <!-- Cancelled Bookings -->
-
-    <div class="card shadow border-0">
-
-        <div class="card-body">
-
-            <h3 class="text-danger mb-3">
-                Cancelled Bookings
-            </h3>
-
-            {% if cancelled_bookings %}
-
-            <table class="table table-hover">
-
-                <thead>
-                    <tr>
-                        <th>Booking ID</th>
-                        <th>Trekker</th>
-                        <th>Trek</th>
-                        <th>Booking Date</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-
-                    {% for booking in cancelled_bookings %}
-                    <tr>
-
-                        <td>{{ booking.id }}</td>
-
-                        <td>{{ booking.trekker.name }}</td>
-
-                        <td>{{ booking.trek.name }}</td>
-
-                        <td>{{ booking.booking_date.strftime('%d-%m-%Y %I:%M %p') }}</td>
-
-                        <td>
-                            <span class="badge bg-danger">
-                                Cancelled
-                            </span>
-                        </td>
-
-                    </tr>
-                    {% endfor %}
-
-                </tbody>
-
-            </table>
-
-            {% else %}
-
-            <div class="alert alert-info mb-0">
-                No cancelled bookings available.
-            </div>
-
-            {% endif %}
-
-        </div>
-
     </div>
 
 </div>

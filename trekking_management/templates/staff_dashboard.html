@@ -25,15 +25,16 @@ Staff Dashboard
 
     </div>
 
+
+    <!-- Statistics -->
+
     <div class="row mb-5">
 
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="card shadow border-0">
                 <div class="card-body text-center">
 
-                    <h2>
-                        🏔
-                    </h2>
+                    <h2>🏔</h2>
 
                     <h4>
                         Assigned Treks
@@ -47,16 +48,32 @@ Staff Dashboard
             </div>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="card shadow border-0">
                 <div class="card-body text-center">
 
-                    <h2>
-                        🥾
-                    </h2>
+                    <h2>✅</h2>
 
                     <h4>
-                        Total Registered Trekkers
+                        Completed Treks
+                    </h4>
+
+                    <h1 class="text-success">
+                        {{ total_completed }}
+                    </h1>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow border-0">
+                <div class="card-body text-center">
+
+                    <h2>🥾</h2>
+
+                    <h4>
+                        Registered Trekkers
                     </h4>
 
                     <h1 class="text-success">
@@ -66,59 +83,96 @@ Staff Dashboard
                 </div>
             </div>
         </div>
-
     </div>
+
+
+    <!-- Assigned Treks -->
 
     <div class="card shadow border-0">
         <div class="card-body">
 
             <h3 class="text-success mb-3">
-                Assigned Treks
+                Current Assigned Treks
             </h3>
 
             {% if assigned_treks %}
-            <table class="table table-hover">
+
+            <table class="table table-hover align-middle">
 
                 <thead>
                     <tr>
                         <th>Name</th>
+
                         <th>Location</th>
+
                         <th>Dates</th>
+
                         <th>Status</th>
+
                         <th>Available Slots</th>
+
                         <th>Registered Trekkers</th>
+
                         <th>Action</th>
                     </tr>
                 </thead>
 
                 <tbody>
-
                     {% for trek in assigned_treks %}
                     <tr>
                         <td>{{ trek.name }}</td>
+
                         <td>{{ trek.location }}</td>
+
                         <td>
-                            {{ trek.start_date }}
+                            {{ trek.start_date.strftime('%d-%m-%Y') }}
                             -
-                            {{ trek.end_date }}
+                            {{ trek.end_date.strftime('%d-%m-%Y') }}
                         </td>
-                        <td>{{ trek.status }}</td>
+
+                        <td>
+                            {% if trek.status=="Pending" %}
+                                <span class="badge bg-secondary">Pending</span>
+
+                            {% elif trek.status=="Approved" %}
+                                <span class="badge bg-primary">Approved</span>
+
+                            {% elif trek.status=="Open" %}
+                                <span class="badge bg-success">Open</span>
+
+                            {% elif trek.status=="Closed" %}
+                                <span class="badge bg-danger">Closed</span>
+
+                            {% endif %}
+                        </td>
+
                         <td>
                             {{ trek.available_slots }}
                             /
                             {{ trek.total_slots }}
                         </td>
+
                         <td>
                             {{ trek_counts[trek.id] }}
                         </td>
+
                         <td>
-                            <a href="{{ url_for('routes.staff_update_trek', trek_id=trek.id) }}"
+
+                            <a href="{{ url_for('routes.staff_view_trek',
+                                                trek_id=trek.id) }}"
+                               class="btn btn-primary btn-sm">
+                                Details
+                            </a>
+
+                            <a href="{{ url_for('routes.staff_update_trek',
+                                                trek_id=trek.id) }}"
                                class="btn btn-success btn-sm">
                                 Manage
                             </a>
 
-                            <a href="{{ url_for('routes.staff_view_participants', trek_id=trek.id) }}"
-                                class="btn btn-dark btn-sm">
+                            <a href="{{ url_for('routes.staff_view_participants',
+                                                trek_id=trek.id) }}"
+                               class="btn btn-dark btn-sm">
                                 Participants
                             </a>
                         </td>
@@ -133,10 +187,16 @@ Staff Dashboard
             <div class="text-center py-4">
 
                 <h5 class="text-muted">
-                    No treks assigned yet.
+                    No active treks are currently assigned.
                 </h5>
 
+                <p class="text-muted mb-0">
+                    You can view your previously completed treks from the
+                    <strong>History</strong> page.
+                </p>
+
             </div>
+
             {% endif %}
 
         </div>

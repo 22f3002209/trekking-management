@@ -69,10 +69,6 @@ Trek History
                             <th>Contact</th>
 
                             <th>Completed On</th>
-
-                            <th>Rating</th>
-
-                            <th>Feedback</th>
                         </tr>
                     </thead>
 
@@ -88,20 +84,6 @@ Trek History
 
                         <td>{{ history.completed_on.strftime("%d-%m-%Y") }}</td>
 
-                        <td>
-                            {% if history.rating %}
-                                ⭐ {{ history.rating }}/5
-
-                            {% else %}
-                                N/A
-
-                            {% endif %}
-
-                        </td>
-
-                        <td>
-                            {{ history.feedback or "N/A" }}
-                        </td>
                     </tr>
 
                     {% endfor %}

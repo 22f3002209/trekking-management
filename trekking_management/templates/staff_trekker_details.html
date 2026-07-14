@@ -5,7 +5,7 @@ Trekker Details
 {% endblock %}
 
 {% block navbar %}
-{% include "admin_navbar.html" %}
+{% include "staff_navbar.html" %}
 {% endblock %}
 
 {% block content %}
@@ -38,7 +38,6 @@ Trekker Details
 
             <p>
                 <strong>Status:</strong>
-
                 {% if trekker.is_active %}
                     Active
                 {% else %}

@@ -25,7 +25,9 @@ def home():
 def admin_dashboard():
     
     total_treks = Trek.query.count()
-    total_staff = TrekStaff.query.count()
+    total_staff = TrekStaff.query.filter_by(
+        approval_status="Approved"
+    ).count()
     total_trekkers = Trekker.query.count()
     total_bookings = Booking.query.count()
     
@@ -160,14 +162,28 @@ def reject_staff(id):
 @routes.route('/toggle_staff_status/<int:id>', methods=['POST'])
 @login_required
 def toggle_staff_status(id):
+
     staff = TrekStaff.query.get_or_404(id)
+
+    # Prevent deactivating staff assigned to active treks
+    if staff.is_active:
+        active_trek = Trek.query.filter(
+            Trek.assigned_staff_id == staff.id,
+            Trek.status.in_(["Pending", "Approved", "Open", "Closed"])
+        ).first()
+
+        if active_trek:
+            flash(
+                f"Cannot deactivate staff because they are assigned to '{active_trek.name}'. Reassign the trek first.",
+                "danger"
+            )
+            return redirect(url_for("routes.manage_staff"))
 
     staff.is_active = not staff.is_active
 
     db.session.commit()
 
-    flash("Staff status updated", "success")
-
+    flash("Staff status updated.", "success")
     return redirect(url_for("routes.manage_staff"))
 
 
@@ -208,6 +224,12 @@ def add_trek():
             Trek.end_date >= start_date
         ).first()
 
+        # Validation 1: Date check
+        if start_date > end_date:
+            flash("Start date cannot be after end date.", "danger")
+            return redirect(url_for('routes.add_trek'))
+        
+        # Validation 2: Staff overlap check
         if conflicting_trek:
             flash(f"Staff is already assigned to '{conflicting_trek.name}' during these dates", "danger")
             return redirect(url_for("routes.add_trek"))
@@ -247,6 +269,11 @@ def admin_view_trek(id):
 @login_required
 def edit_trek(id):
     trek = Trek.query.get_or_404(id)
+
+    # Completed trek cannot be edited
+    if trek.status == "Completed":
+        flash("Completed trek cannot be modified.", "danger")
+        return redirect(url_for("routes.manage_treks"))
 
     approved_staff = TrekStaff.query.filter_by(approval_status='Approved', is_active=True).all()
 
@@ -326,6 +353,23 @@ def edit_trek(id):
 def delete_trek(id):
     trek = Trek.query.get_or_404(id)
 
+    # Completed trek cannot be deleted
+    if trek.status == "Completed":
+        flash("Completed trek cannot be deleted.", "danger")
+        return redirect(url_for("routes.manage_treks"))
+    
+    existing_booking = Booking.query.filter(
+        Booking.trek_id == trek.id,
+        Booking.status.in_(["Booked", "Completed"])
+    ).first()
+
+    if existing_booking:
+        flash(
+            "Trek cannot be deleted because participants have already booked it.",
+            "danger"
+        )
+        return redirect(url_for("routes.manage_treks"))
+
     db.session.delete(trek)
     db.session.commit()
 
@@ -366,7 +410,22 @@ def admin_trekker_details(id):
 @routes.route('/toggle_trekker_status/<int:id>', methods=['POST'])
 @login_required
 def toggle_trekker_status(id):
+
     trekker = Trekker.query.get_or_404(id)
+
+    # Prevent deactivating trekkers with active bookings
+    if trekker.is_active:
+        active_booking = Booking.query.filter_by(
+            trekker_id=trekker.id,
+            status="Booked"
+        ).first()
+
+        if active_booking:
+            flash(
+                "Cannot deactivate trekker because they have an active booking.",
+                "danger"
+            )
+            return redirect(url_for("routes.view_trekkers"))
 
     trekker.is_active = not trekker.is_active
 
@@ -374,9 +433,7 @@ def toggle_trekker_status(id):
 
     flash("Trekker status updated.", "success")
 
-    return redirect(
-        url_for("routes.view_trekkers")
-    )
+    return redirect(url_for("routes.view_trekkers"))
 
 
 # _________About Bookings_________
@@ -386,13 +443,13 @@ def toggle_trekker_status(id):
 @login_required
 def view_bookings():
 
-    booked_bookings = Booking.query.filter_by(status='Booked').all()
-    cancelled_bookings = Booking.query.filter_by(status='Cancelled').all()
+    bookings = Booking.query.order_by(
+        Booking.booking_date.desc()
+    ).all()
 
     return render_template(
         "view_bookings.html",
-        booked_bookings=booked_bookings,
-        cancelled_bookings=cancelled_bookings
+        bookings=bookings
     )
 
 # ==========================================
@@ -404,30 +461,44 @@ def view_bookings():
 @login_required
 def staff_dashboard():
 
-    assigned_treks = Trek.query.filter_by(
-        assigned_staff_id=current_user.id,
-        Trek.status != "Pending"
-        ).all()
+    # Current (non-completed) treks
+    assigned_treks = Trek.query.filter(
+        Trek.assigned_staff_id == current_user.id,
+        Trek.status != "Completed"
+    ).order_by(Trek.start_date).all()
 
     total_assigned = len(assigned_treks)
-    total_registered = 0
+
+    # Completed treks
+    total_completed = Trek.query.filter(
+        Trek.assigned_staff_id == current_user.id,
+        Trek.status == "Completed"
+    ).count()
+
+    # Total trekkers handled by this staff (booked + completed)
+    total_registered = Booking.query.join(Trek).filter(
+        Trek.assigned_staff_id == current_user.id,
+        Booking.status.in_(["Booked", "Completed"])
+    ).count()
+
+    # Registered trekkers for each currently assigned trek
     trek_counts = {}
 
     for trek in assigned_treks:
-        count = Booking.query.filter_by(
-            trek_id=trek.id,
-            status="Booked"
+
+        trek_counts[trek.id] = Booking.query.filter(
+            Booking.trek_id == trek.id,
+            Booking.status.in_(["Booked", "Completed"])
         ).count()
 
-        trek_counts[trek.id] = count
-        total_registered += count
-
-    return render_template("staff_dashboard.html",
-                           assigned_treks=assigned_treks,
-                           total_assigned=total_assigned,
-                           total_registered=total_registered,
-                           trek_counts=trek_counts
-                           )
+    return render_template(
+        "staff_dashboard.html",
+        assigned_treks=assigned_treks,
+        total_assigned=total_assigned,
+        total_completed=total_completed,
+        total_registered=total_registered,
+        trek_counts=trek_counts
+    )
 
 # Edit profile
 @routes.route('/staff_edit_profile', methods=['GET', 'POST'])
@@ -458,6 +529,28 @@ def staff_edit_profile():
                            staff=staff
                            )
 
+# Staff View Trek Details
+@routes.route("/staff_view_trek/<int:trek_id>")
+@login_required
+def staff_view_trek(trek_id):
+
+    trek = Trek.query.get_or_404(trek_id)
+
+    if trek.assigned_staff_id != current_user.id:
+        flash("Unauthorized access.", "danger")
+        return redirect(url_for("routes.staff_dashboard"))
+
+    registered_trekkers = Booking.query.filter(
+        Booking.trek_id == trek.id,
+        Booking.status.in_(["Booked", "Completed"])
+    ).count()
+
+    return render_template(
+        "staff_view_trek.html",
+        trek=trek,
+        registered_trekkers=registered_trekkers
+    )
+
 # Trek update
 @routes.route('/staff_update_trek/<int:trek_id>', methods=['GET', 'POST'])
 @login_required
@@ -466,35 +559,88 @@ def staff_update_trek(trek_id):
     trek = Trek.query.get_or_404(trek_id)
 
     # Only assigned staff can manage
-
     if trek.assigned_staff_id != current_user.id:
         flash("Unauthorized access.", "danger")
         return redirect(url_for("routes.staff_dashboard"))
 
-    if request.method == 'POST':
-        
-        new_status = request.form.get('status')
-        
-        # Create Trek History when trek becomes completed
-        if (trek.status != 'Completed' and new_status == 'Completed'):
+    # Completed trek cannot be modified
+    if trek.status == "Completed":
+        flash("Completed trek cannot be modified.", "danger")
+        return redirect(url_for("routes.staff_dashboard"))
 
-            bookings = Booking.query.filter_by(trek_id=trek.id, status='Booked').all()
+    if request.method == 'POST':
+
+        # Update Total Slots
+        new_total_slots = int(request.form.get("total_slots"))
+
+        booked_count = Booking.query.filter(
+            Booking.trek_id == trek.id,
+            Booking.status == "Booked"
+        ).count()
+
+        if new_total_slots < booked_count:
+            flash(
+                f"Total slots cannot be less than {booked_count} booked participant(s).",
+                "danger"
+            )
+            return redirect(
+                url_for("routes.staff_update_trek", trek_id=trek.id)
+            )
+
+        trek.total_slots = new_total_slots
+        trek.available_slots = new_total_slots - booked_count
+
+        # Status Update
+
+        new_status = request.form.get("status")
+        current_status = trek.status
+
+        valid_transitions = {
+            "Approved": ["Open"],
+            "Open": ["Closed", "Completed"],
+            "Closed": ["Open"],
+            "Completed": []
+        }
+
+        if new_status != current_status:
+
+            if new_status not in valid_transitions[current_status]:
+                flash(
+                    f"Trek can only be changed from '{current_status}' to "
+                    f"{', '.join(valid_transitions[current_status]) or 'no further status'}.",
+                    "danger"
+                )
+
+                return redirect(
+                    url_for("routes.staff_update_trek", trek_id=trek.id)
+                )
+
+        # Create Trek History
+        if current_status != "Completed" and new_status == "Completed":
+
+            bookings = Booking.query.filter_by(
+                trek_id=trek.id,
+                status="Booked"
+            ).all()
 
             for booking in bookings:
-                booking.status = 'Completed'
+
+                booking.status = "Completed"
 
                 existing_history = TrekHistory.query.filter_by(
                     booking_id=booking.id
                 ).first()
 
                 if not existing_history:
+
                     history = TrekHistory(
                         booking_id=booking.id,
                         trekker_id=booking.trekker_id,
                         trek_id=trek.id,
                         staff_id=trek.assigned_staff_id
                     )
-                db.session.add(history)
+
+                    db.session.add(history)
 
         trek.status = new_status
 
@@ -503,7 +649,10 @@ def staff_update_trek(trek_id):
         flash("Trek updated successfully.", "success")
         return redirect(url_for("routes.staff_dashboard"))
 
-    return render_template("staff_update_trek.html", trek=trek)
+    return render_template(
+        "staff_update_trek.html",
+        trek=trek
+    )
 
 # View participants
 @routes.route('/staff_view_participants/<int:trek_id>')
@@ -516,21 +665,18 @@ def staff_view_participants(trek_id):
         flash("Unauthorized access.", "danger")
         return redirect(url_for("routes.staff_dashboard"))
 
-    booked_participants = Booking.query.filter_by(
-        trek_id=trek.id,
-        status="Booked"
-        ).all()
-    
-    cancelled_participants = Booking.query.filter_by(
-        trek_id=trek.id,
-        status="Cancelled"
-        ).all()
+    participants = Booking.query.filter(
+        Booking.trek_id == trek.id,
+        Booking.status.in_(["Booked", "Completed", "Cancelled"])
+    ).order_by(
+        Booking.booking_date.desc()
+    ).all()
 
     return render_template(
         "staff_view_participants.html",
         trek=trek,
-        booked_participants=booked_participants,
-        cancelled_participants=cancelled_participants)
+        participants=participants
+    )
 
 # View Trekker details
 @routes.route('/staff_trekker_details/<int:trekker_id>/<int:trek_id>')
@@ -545,6 +691,43 @@ def staff_trekker_details(trekker_id, trek_id):
         trekker=trekker,
         trek_id=trek_id,
         history=history
+    )
+
+# View guiding history
+@routes.route("/staff_history")
+@login_required
+def staff_history():
+
+    completed_treks = Trek.query.filter(
+        Trek.assigned_staff_id == current_user.id,
+        Trek.status == "Completed"
+    ).order_by(
+        Trek.end_date.desc()
+    ).all()
+
+    history = []
+
+    for trek in completed_treks:
+
+        participants = Booking.query.filter_by(
+            trek_id=trek.id,
+            status="Completed"
+        ).count()
+
+        history.append({
+
+            "trek": trek,
+
+            "participants": participants
+
+        })
+
+    return render_template(
+
+        "staff_history.html",
+
+        history=history
+
     )
 
 # ==========================================

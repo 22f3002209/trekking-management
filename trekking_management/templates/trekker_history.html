@@ -19,37 +19,31 @@ Trek History
     <div class="card shadow border-0">
         <div class="card-body">
 
-            {% if history %}
+            {% if histories %}
             <table class="table table-hover">
 
                 <thead>
                     <tr>
                         <th>Trek</th>
+                        <th>Location</th>
+                        <th>Duration</th>
+                        <th>Staff</th>
                         <th>Completed On</th>
-                        <th>Rating</th>
-                        <th>Feedback</th>
                     </tr>
                 </thead>
 
                 <tbody>
                 {% for history in histories %}
                     <tr>
-                        <td>
-                            {{ history.trek.name }}
-                        </td>
+                        <td>{{ history.trek.name }}</td>
 
-                        <td>
-                            {{ history.completed_on }}
-                        </td>
+                        <td>{{ history.trek.location }}</td>
 
-                        <td>
-                            {{ history.rating or 'N/A' }}
-                        </td>
+                        <td>{{ history.trek.duration }} Days</td>
 
-                        <td>
-                            {{ history.feedback or 'N/A' }}
-                        </td>
+                        <td>{{ history.staff.name }}</td>
 
+                        <td>{{ history.completed_on.strftime("%d-%m-%Y") }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>

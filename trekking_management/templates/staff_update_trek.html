@@ -11,7 +11,9 @@ Update Trek
 {% block content %}
 
 <div class="row justify-content-center mt-4">
+
     <div class="col-md-6">
+
         <div class="card shadow border-0 p-4">
 
             <h2 class="text-success text-center mb-4">
@@ -21,45 +23,89 @@ Update Trek
             <form method="POST">
 
                 <div class="mb-3">
-                    <label class="form-label">Total Slots</label>
-                    <input type="text" class="form-control" value="{{ trek.total_slots }}" readonly>
+
+                    <label class="form-label">
+                        Total Slots
+                    </label>
+
+                    <input
+                        type="number"
+                        class="form-control"
+                        name="total_slots"
+                        min="{{ trek.total_slots - trek.available_slots }}"
+                        value="{{ trek.total_slots }}"
+                        required>
+
+                    <div class="form-text">
+                        Cannot be less than the number of booked participants.
+                    </div>
+
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Available Slots</label>
-                    <input type="number" class="form-control" name="available_slots" value="{{trek.available_slots }}"
-                    readonly>
-                </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Status</label>
+
+                    <label class="form-label">
+                        Available Slots
+                    </label>
+
+                    <input
+                        type="number"
+                        class="form-control"
+                        value="{{ trek.available_slots }}"
+                        readonly>
+
+                    <div class="form-text">
+                        Automatically updated after saving.
+                    </div>
+
+                </div>
+
+
+                <div class="mb-4">
+
+                    <label class="form-label">
+                        Trek Status
+                    </label>
+
                     <select class="form-select" name="status">
-                        <option {% if trek.status=='Open' %}selected{% endif %}>
-                            Open
-                        </option>
 
-                        <option {% if trek.status=='Ongoing' %}selected{% endif %}>
-                            Ongoing
-                        </option>
+                        {% if trek.status == "Approved" %}
 
-                        <option {% if trek.status=='Closed' %}selected{% endif %}>
-                            Closed
-                        </option>
+                            <option value="Approved" selected>Approved</option>
+                            <option value="Open">Open</option>
 
-                        <option {% if trek.status=='Completed' %}selected{% endif %}>
-                            Completed
-                        </option>
+                        {% elif trek.status == "Open" %}
+
+                            <option value="Open" selected>Open</option>
+                            <option value="Closed">Closed</option>
+                            <option value="Completed">Completed</option>
+
+                        {% elif trek.status == "Closed" %}
+
+                            <option value="Closed" selected>Closed</option>
+                            <option value="Open">Open</option>
+
+                        {% endif %}
+
                     </select>
+
                 </div>
 
-                <button type="submit" class="btn btn-success w-100">
+                <button
+                    type="submit"
+                    class="btn btn-success w-100">
+
                     Update Trek
+
                 </button>
 
             </form>
 
         </div>
+
     </div>
+
 </div>
 
 {% endblock %}
