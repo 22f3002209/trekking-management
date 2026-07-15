@@ -853,6 +853,7 @@ def book_trek(trek_id):
         flash("No slots available.", "danger")
         return redirect(url_for("routes.trek_details", trek_id=trek.id))
 
+    # Prevent duplicate booking for the same trek
     existing_booking = Booking.query.filter_by(
         trekker_id=current_user.id,
         trek_id=trek.id,
@@ -861,6 +862,21 @@ def book_trek(trek_id):
 
     if existing_booking:
         flash("You have already booked this trek.", "warning")
+        return redirect(url_for("routes.trek_details", trek_id=trek.id))
+
+    # Prevent booking another trek with overlapping dates
+    overlapping_booking = Booking.query.join(Trek).filter(
+        Booking.trekker_id == current_user.id,
+        Booking.status == "Booked",
+        Trek.start_date <= trek.end_date,
+        Trek.end_date >= trek.start_date
+    ).first()
+
+    if overlapping_booking:
+        flash(
+            f"You already have another trek ('{overlapping_booking.trek.name}') booked during these dates.",
+            "danger"
+        )
         return redirect(url_for("routes.trek_details", trek_id=trek.id))
 
     booking = Booking(
