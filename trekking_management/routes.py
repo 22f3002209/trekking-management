@@ -54,6 +54,7 @@ def admin_search():
 
         treks = Trek.query.filter(
             (Trek.name.ilike(f"%{search_text}%")) |
+            (Trek.location.ilike(f"%{search_text}%")) |
             (Trek.id == search_text)
         ).all()
 
@@ -738,25 +739,34 @@ def staff_history():
 @login_required
 def trekker_dashboard():
 
-    location = request.args.get('location', '')
-    difficulty = request.args.get('difficulty', '')
+    search = request.args.get("search", "")
+    difficulty = request.args.get("difficulty", "")
 
     query = Trek.query.filter(
-        Trek.status == 'Open',
+        Trek.status == "Open",
         Trek.available_slots > 0
     )
 
-    if location:
-        query = query.filter(Trek.location.ilike(f"%{location}%"))
+    if search:
+
+        query = query.filter(
+
+            (Trek.name.ilike(f"%{search}%")) |
+
+            (Trek.location.ilike(f"%{search}%"))
+
+        )
 
     if difficulty:
-        query = query.filter_by(difficulty=difficulty)
 
+        query = query.filter_by(
+            difficulty=difficulty
+        )
     available_treks = query.all()
 
     return render_template("trekker_dashboard.html",
                            available_treks=available_treks,
-                           location=location,
+                           search=search,
                            difficulty=difficulty
                            )
 

@@ -89,8 +89,6 @@ class Booking(db.Model):
     # One to one relationship with TrekHistory
     history = db.relationship('TrekHistory', backref='booking', uselist=False, cascade='all, delete-orphan', passive_deletes=True)
     
-    # later add the feature to register for 1+ person from simgle account
-
 
 # Trek History Model
 class TrekHistory(db.Model):

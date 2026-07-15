@@ -22,11 +22,6 @@ Trekker Dashboard
             class="btn btn-success">
                 My Bookings
             </a>
-
-            <a href="{{ url_for('routes.trekker_history') }}"
-            class="btn btn-success">
-                Trek history
-            </a>
         </div>
 
     </div>
@@ -39,8 +34,8 @@ Trekker Dashboard
 
                 <div class="row">
                     <div class="col-md-5">
-                        <input type="text" class="form-control" name="location"
-                            placeholder="Search by location" value="{{ location }}">
+                        <input type="text" class="form-control" name="search"
+                            placeholder="Search by trek name or location" value="{{ search }}">
                     </div>
 
                     <div class="col-md-4">
@@ -83,6 +78,8 @@ Trekker Dashboard
     <!-- Trek Table -->
     <div class="card shadow border-0">
         <div class="card-body">
+
+            {% if available_treks %}
             <table class="table table-hover">
 
                 <thead>
@@ -117,6 +114,17 @@ Trekker Dashboard
                 </tbody>
 
             </table>
+
+            {% else %}
+            <div class="text-center py-4">
+
+                <h5 class="text-muted">
+                    No matching treks found.
+                </h5>
+
+            </div>
+
+            {% endif %}
 
         </div>
 
